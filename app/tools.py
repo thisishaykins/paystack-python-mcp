@@ -1,7 +1,7 @@
 from app.server import mcp
 from app.paystack_client import paystack_client
 
-@mcp.tool()
+@mcp.tool(name="balance.read")
 def get_balance():
     """
     Retrieves the balance from a Paystack account.
@@ -9,7 +9,7 @@ def get_balance():
     return paystack_client.get_balance()
 
 
-@mcp.tool()
+@mcp.tool(name="customer.list")
 def list_customers():
     """
     Retrieves a list of all customers.
@@ -17,7 +17,7 @@ def list_customers():
     return paystack_client.list_customers()
 
 
-@mcp.tool()
+@mcp.tool(name="customer.create")
 def create_customer(email: str, first_name: str, last_name: str):
     """
     Creates a new customer.
@@ -30,7 +30,7 @@ def create_customer(email: str, first_name: str, last_name: str):
     return paystack_client.create_customer(email, first_name, last_name)
 
 
-@mcp.tool()
+@mcp.tool(name="customer.read")
 def fetch_customer(customer_code: str):
     """
     Fetches the details of a specific customer.
@@ -41,7 +41,7 @@ def fetch_customer(customer_code: str):
     return paystack_client.fetch_customer(customer_code)
 
 
-@mcp.tool()
+@mcp.tool(name="customer.update")
 def update_customer(code: str, first_name: str, last_name: str):
     """
     Updates the details of a specific customer.
@@ -54,8 +54,7 @@ def update_customer(code: str, first_name: str, last_name: str):
     return paystack_client.update_customer(code, first_name, last_name)
 
 
-@mcp.tool()
-=======
+@mcp.tool(name="product.list")
 def list_products():
     """
     Retrieves a list of all products.
@@ -63,7 +62,7 @@ def list_products():
     return paystack_client.list_products()
 
 
-@mcp.tool()
+@mcp.tool(name="product.create")
 def create_product(name: str, description: str, price: int, currency: str):
     """
     Creates a new product.
@@ -77,7 +76,7 @@ def create_product(name: str, description: str, price: int, currency: str):
     return paystack_client.create_product(name, description, price, currency)
 
 
-@mcp.tool()
+@mcp.tool(name="price.list")
 def list_prices():
     """
     Retrieves a list of all prices.
@@ -85,7 +84,7 @@ def list_prices():
     return paystack_client.list_prices()
 
 
-@mcp.tool()
+@mcp.tool(name="price.create")
 def create_price(currency: str, amount: int, name: str):
     """
     Creates a new price.
@@ -98,7 +97,7 @@ def create_price(currency: str, amount: int, name: str):
     return paystack_client.create_price(currency, amount, name)
 
 
-@mcp.tool()
+@mcp.tool(name="invoice.list")
 def list_invoices():
     """
     Retrieves a list of all invoices.
@@ -106,7 +105,7 @@ def list_invoices():
     return paystack_client.list_invoices()
 
 
-@mcp.tool()
+@mcp.tool(name="invoice.create")
 def create_invoice(customer: str, amount: int):
     """
     Creates a new invoice.
@@ -118,7 +117,7 @@ def create_invoice(customer: str, amount: int):
     return paystack_client.create_invoice(customer, amount)
 
 
-@mcp.tool()
+@mcp.tool(name="transaction.list")
 def list_transactions():
     """
     Retrieves a list of all transactions.
@@ -126,7 +125,7 @@ def list_transactions():
     return paystack_client.list_transactions()
 
 
-@mcp.tool()
+@mcp.tool(name="transaction.initialize")
 def initialize_transaction(email: str, amount: int, currency: str):
     """
     Initializes a new transaction.
@@ -139,7 +138,7 @@ def initialize_transaction(email: str, amount: int, currency: str):
     return paystack_client.initialize_transaction(email, amount, currency)
 
 
-@mcp.tool()
+@mcp.tool(name="transaction.verify")
 def verify_transaction(reference: str):
     """
     Verifies the status of a transaction.
@@ -150,7 +149,7 @@ def verify_transaction(reference: str):
     return paystack_client.verify_transaction(reference)
 
 
-@mcp.tool()
+@mcp.tool(name="transaction.read")
 def fetch_transaction(transaction_id: int):
     """
     Fetches the details of a specific transaction.
@@ -161,7 +160,7 @@ def fetch_transaction(transaction_id: int):
     return paystack_client.fetch_transaction(transaction_id)
 
 
-@mcp.tool()
+@mcp.tool(name="refund.create")
 def create_refund(transaction: str, amount: int | None = None):
     """
     Creates a new refund.
@@ -174,7 +173,7 @@ def create_refund(transaction: str, amount: int | None = None):
     return paystack_client.create_refund(transaction, amount)
 
 
-@mcp.tool()
+@mcp.tool(name="subscription.list")
 def list_subscriptions():
     """
     Retrieves a list of all subscriptions.
@@ -182,7 +181,7 @@ def list_subscriptions():
     return paystack_client.list_subscriptions()
 
 
-@mcp.tool()
+@mcp.tool(name="subscription.disable")
 def disable_subscription(code: str, token: str):
     """
     Disables a subscription.
@@ -194,7 +193,7 @@ def disable_subscription(code: str, token: str):
     return paystack_client.disable_subscription(code, token)
 
 
-@mcp.tool()
+@mcp.tool(name="coupon.list")
 def list_coupons():
     """
     Retrieves a list of all coupons.
@@ -202,7 +201,7 @@ def list_coupons():
     return paystack_client.list_coupons()
 
 
-@mcp.tool()
+@mcp.tool(name="coupon.create")
 def create_coupon(coupon: str, amount_off: int):
     """
     Creates a new coupon.
@@ -214,7 +213,7 @@ def create_coupon(coupon: str, amount_off: int):
     return paystack_client.create_coupon(coupon, amount_off)
 
 
-@mcp.tool()
+@mcp.tool(name="dispute.list")
 def list_disputes():
     """
     Retrieves a list of all disputes.
@@ -222,7 +221,7 @@ def list_disputes():
     return paystack_client.list_disputes()
 
 
-@mcp.tool()
+@mcp.tool(name="dispute.add_evidence")
 async def add_evidence_to_dispute(dispute_id: str, customer_email: str, customer_name: str, customer_phone: str, service_details: str):
     """
     Adds evidence to a dispute.
@@ -237,7 +236,7 @@ async def add_evidence_to_dispute(dispute_id: str, customer_email: str, customer
     return await paystack_client.add_evidence_to_dispute(dispute_id, customer_email, customer_name, customer_phone, service_details)
 
 
-@mcp.tool()
+@mcp.tool(name="payment_page.create")
 def create_payment_page(name: str, amount: int):
     """
     Creates a new payment page.
@@ -249,7 +248,7 @@ def create_payment_page(name: str, amount: int):
     return paystack_client.create_payment_page(name, amount)
 
 
-@mcp.tool()
+@mcp.tool(name="plan.create")
 def create_plan(name: str, amount: int, interval: str):
     """
     Creates a new subscription plan.
@@ -262,7 +261,7 @@ def create_plan(name: str, amount: int, interval: str):
     return paystack_client.create_plan(name, amount, interval)
 
 
-@mcp.tool()
+@mcp.tool(name="plan.list")
 def list_plans():
     """
     Retrieves a list of all subscription plans.
@@ -270,7 +269,7 @@ def list_plans():
     return paystack_client.list_plans()
 
 
-@mcp.tool()
+@mcp.tool(name="plan.read")
 def fetch_plan(plan_code: str):
     """
     Fetches the details of a specific subscription plan.
@@ -281,7 +280,7 @@ def fetch_plan(plan_code: str):
     return paystack_client.fetch_plan(plan_code)
 
 
-@mcp.tool()
+@mcp.tool(name="verification.resolve_account_number")
 def resolve_account_number(account_number: str, bank_code: str):
     """
     Resolves an account number to get the account holder's name.

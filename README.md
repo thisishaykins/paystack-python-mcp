@@ -60,60 +60,50 @@ The server will start and listen for requests on `stdio`.
 
 The following tools are available through the MCP server:
 
-### Balance
-- `get_balance()`: Retrieves the balance from a Paystack account.
-
-### Customers
-- `list_customers()`: Retrieves a list of all customers.
-- `create_customer(email: str, first_name: str, last_name: str)`: Creates a new customer.
-
-### Products
-- `list_products()`: Retrieves a list of all products.
-- `create_product(name: str, description: str, price: int, currency: str)`: Creates a new product.
-
-### Prices
-- `list_prices()`: Retrieves a list of all prices.
-- `create_price(currency: str, amount: int, name: str)`: Creates a new price.
-
-### Invoices
-- `list_invoices()`: Retrieves a list of all invoices.
-- `create_invoice(customer: str, amount: int)`: Creates a new invoice.
-
-### Transactions
-- `list_transactions()`: Retrieves a list of all transactions.
-
-### Refunds
-- `create_refund(transaction: str, amount: int | None = None)`: Creates a new refund.
-
-### Subscriptions
-- `list_subscriptions()`: Retrieves a list of all subscriptions.
-- `disable_subscription(code: str, token: str)`: Disables a subscription.
-
-### Coupons
-- `list_coupons()`: Retrieves a list of all coupons.
-- `create_coupon(coupon: str, amount_off: int)`: Creates a new coupon.
-
-### Disputes
-- `list_disputes()`: Retrieves a list of all disputes.
-- `add_evidence_to_dispute(dispute_id: str, customer_email: str, customer_name: str, customer_phone: str, service_details: str)`: Adds evidence to a dispute.
-
-### Payment Pages
-- `create_payment_page(name: str, amount: int)`: Creates a new payment page.
+| Tool | Description |
+| --- | --- |
+| `balance.read` | Retrieves the balance from a Paystack account. |
+| `coupon.create` | Creates a new coupon. |
+| `coupon.list` | Retrieves a list of all coupons. |
+| `customer.create` | Creates a new customer. |
+| `customer.list` | Retrieves a list of all customers. |
+| `customer.read` | Fetches the details of a specific customer. |
+| `customer.update` | Updates the details of a specific customer. |
+| `dispute.add_evidence` | Adds evidence to a dispute. |
+| `dispute.list` | Retrieves a list of all disputes. |
+| `invoice.create` | Creates a new invoice. |
+| `invoice.list` | Retrieves a list of all invoices. |
+| `payment_page.create` | Creates a new payment page. |
+| `plan.create` | Creates a new subscription plan. |
+| `plan.list` | Retrieves a list of all subscription plans. |
+| `plan.read` | Fetches the details of a specific subscription plan. |
+| `price.create` | Creates a new price. |
+| `price.list` | Retrieves a list of all prices. |
+| `product.create` | Creates a new product. |
+| `product.list` | Retrieves a list of all products. |
+| `refund.create` | Creates a new refund. |
+| `subscription.disable` | Disables a subscription. |
+| `subscription.list` | Retrieves a list of all subscriptions. |
+| `transaction.initialize` | Initializes a new transaction. |
+| `transaction.list` | Retrieves a list of all transactions. |
+| `transaction.read` | Fetches the details of a specific transaction. |
+| `transaction.verify` | Verifies the status of a transaction. |
+| `verification.resolve_account_number` | Resolves an account number to get the account holder's name. |
 
 ## Usage with an AI Assistant (e.g., Claude)
 
 You can connect this MCP server to an AI assistant like Claude to allow it to perform actions on your behalf. The assistant can call the tools by sending a JSON-RPC request to the server.
 
-Here is an example of how Claude could use the `create_customer` tool:
+Here is an example of how Claude could use the `customer.create` tool:
 
 **User:** "Please create a new customer with the email address 'test@example.com' and the name 'Test User'."
 
-**Claude's Thought Process:** "The user wants to create a new customer. I will use the `create_customer` tool. I need to extract the email, first name, and last name from the user's request."
+**Claude's Thought Process:** "The user wants to create a new customer. I will use the `customer.create` tool. I need to extract the email, first name, and last name from the user's request."
 
 **Claude's Tool Call:**
 ```json
 {
-  "tool_name": "create_customer",
+  "tool_name": "customer.create",
   "parameters": {
     "email": "test@example.com",
     "first_name": "Test",
