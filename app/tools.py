@@ -55,6 +55,7 @@ def update_customer(code: str, first_name: str, last_name: str):
 
 
 @mcp.tool()
+=======
 def list_products():
     """
     Retrieves a list of all products.
