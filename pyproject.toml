@@ -36,3 +36,6 @@ dev = [
 Homepage = "https://akinshola.com/paystack-python-mcp"
 Repository = "https://github.com/thisishaykins/paystack-python-mcp"
 Issues = "https://github.com/thisishaykins/paystack-python-mcp/issues"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

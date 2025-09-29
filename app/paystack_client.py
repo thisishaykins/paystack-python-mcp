@@ -1,70 +1,11 @@
 import os
 import paystack
 from dotenv import load_dotenv
-import httpx
 from typing import Any
 
 load_dotenv()
 
 PAYSTACK_API_BASE = "https://api.paystack.co"
-
-
-async def paystack_post_request(
-    endpoint: str, headers: dict[str, str], data: dict[str, Any]
-) -> dict[str, Any] | None:
-    """Make a POST request to the Paystack API with proper error handling."""
-    url = f"{PAYSTACK_API_BASE}/{endpoint}"
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.post(url, headers=headers, json=data, timeout=30.0)
-            response.raise_for_status()
-            return response.json()
-        except Exception:
-            return None
-
-
-async def paystack_get_request(
-    endpoint: str, headers: dict[str, str], params: dict[str, Any] | None = None
-) -> dict[str, Any] | None:
-    """Make a GET request to the Paystack API with proper error handling."""
-    url = f"{PAYSTACK_API_BASE}/{endpoint}"
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.get(
-                url, headers=headers, params=params, timeout=30.0
-            )
-            response.raise_for_status()
-            return response.json()
-        except Exception:
-            return None
-
-
-async def paystack_put_request(
-    endpoint: str, headers: dict[str, str], data: dict[str, Any]
-) -> dict[str, Any] | None:
-    """Make a PUT request to the Paystack API with proper error handling."""
-    url = f"{PAYSTACK_API_BASE}/{endpoint}"
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.put(url, headers=headers, json=data, timeout=30.0)
-            response.raise_for_status()
-            return response.json()
-        except Exception:
-            return None
-
-
-async def paystack_delete_request(
-    endpoint: str, headers: dict[str, str]
-) -> dict[str, Any] | None:
-    """Make a DELETE request to the Paystack API with proper error handling."""
-    url = f"{PAYSTACK_API_BASE}/{endpoint}"
-    async with httpx.AsyncClient() as client:
-        try:
-            response = await client.delete(url, headers=headers, timeout=30.0)
-            response.raise_for_status()
-            return response.json()
-        except Exception:
-            return None
 
 
 class PaystackClient:
@@ -212,7 +153,7 @@ class PaystackClient:
         """List disputes from the Paystack API."""
         return paystack.Dispute.list()
 
-    async def add_evidence_to_dispute(
+    def add_evidence_to_dispute(
         self,
         dispute_id: str,
         customer_email: str,
@@ -221,18 +162,13 @@ class PaystackClient:
         service_details: str,
     ):
         """Add evidence to a dispute using the Paystack API."""
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json",
-        }
-        data = {
-            "customer_email": customer_email,
-            "customer_name": customer_name,
-            "customer_phone": customer_phone,
-            "service_details": service_details,
-        }
-        endpoint = f"dispute/{dispute_id}/evidence"
-        return await paystack_post_request(endpoint, headers, data)
+        return paystack.Dispute.add_evidence(
+            id=dispute_id,
+            customer_email=customer_email,
+            customer_name=customer_name,
+            customer_phone=customer_phone,
+            service_details=service_details,
+        )
 
     def fetch_dispute(self, dispute_id: str):
         """Fetch a dispute's details from the Paystack API."""
@@ -298,9 +234,9 @@ class PaystackClient:
         """Enable a payment page using the Paystack API."""
         return paystack.Page.update(id, active=True)
 
-    def add_payment_page_products(self, id: str, products: list[str]):
+    def add_products_to_payment_page(self, id: str, products: list[str]):
         """Add products to a payment page using the Paystack API."""
-        return paystack.Page.add_products(id, products)
+        return paystack.Page.add_products(id=id, products=products)
 
     def create_plan(self, name: str, amount: int, interval: str):
         """Create a plan using the Paystack API."""
@@ -329,7 +265,7 @@ class PaystackClient:
         """List states for address_verification the Paystack API."""
         return paystack.Verification.avs(type=type, country=country, currency=currency)
 
-    def fetch_bank(
+    def fetch_banks(
         self,
         country: str | None = None,
         pay_with_bank_transfer: bool | None = None,
@@ -354,9 +290,9 @@ class PaystackClient:
         """List countries from the Paystack API."""
         return paystack.Verification.list_countries()
 
-    def resolve_card_bin(self, bin: str):
+    def resolve_card_bin(self, card_bin: str):
         """Resolve a card bin using the Paystack API."""
-        return paystack.Verification.resolve_card_bin(bin)
+        return paystack.Verification.resolve_card_bin(card_bin)
 
 
 # A single client instance to be used by the tools
