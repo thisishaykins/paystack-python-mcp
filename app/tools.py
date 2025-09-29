@@ -492,14 +492,12 @@ def fetch_banks(
 
 
 @mcp.tool(name="verification.list_avs")
-def list_avs(
-    type: str | None = None, country: str | None = None, currency: str | None = None
-):
+def list_avs(country: str, type: str | None = None, currency: str | None = None):
     """
     Lists all available account verification services.
     Args:
+        country: The country code to filter by.
         type: The type of verification service to filter by (optional).
-        country: The country code to filter by (optional).
         currency: The currency code to filter by (optional).
     """
     return paystack_client.list_avs(type, country, currency)
@@ -523,17 +521,6 @@ def resolve_account_number(account_number: str, bank_code: str):
         bank_code: The bank code of the account's bank.
     """
     return paystack_client.resolve_account_number(account_number, bank_code)
-
-
-@mcp.tool(name="verification.resolve_bvn")
-def resolve_bvn(bvn: str):
-    """
-    Resolves a BVN to get the associated account details.
-
-    Args:
-        bvn: The BVN to resolve.
-    """
-    return paystack_client.resolve_bvn(bvn)
 
 
 @mcp.tool(name="verification.resolve_card_bin")

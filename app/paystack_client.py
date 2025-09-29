@@ -1,7 +1,6 @@
 import os
 import paystack
 from dotenv import load_dotenv
-from typing import Any
 
 load_dotenv()
 
@@ -97,7 +96,7 @@ class PaystackClient:
 
     def list_invoices(self):
         """List invoices from the Paystack API."""
-        return paystack.PaymentRequest.fetch()
+        return paystack.PaymentRequest.list()
 
     def create_invoice(self, customer: str, amount: int):
         """Create an invoice using the Paystack API."""
@@ -236,7 +235,7 @@ class PaystackClient:
 
     def add_products_to_payment_page(self, id: str, products: list[str]):
         """Add products to a payment page using the Paystack API."""
-        return paystack.Page.add_products(id=id, products=products)
+        return paystack.Page.add_products(id=id, product=products)
 
     def create_plan(self, name: str, amount: int, interval: str):
         """Create a plan using the Paystack API."""
@@ -258,8 +257,8 @@ class PaystackClient:
 
     def list_avs(
         self,
+        country: str,
         type: str | None = None,
-        country: str | None = None,
         currency: str | None = None,
     ):
         """List states for address_verification the Paystack API."""
