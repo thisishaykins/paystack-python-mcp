@@ -1,11 +1,38 @@
 [project]
 name = "paystack-python-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "Paystack Python Model Context Protocol SDK"
 readme = "README.md"
 requires-python = ">=3.12"
+authors = [{ name = "Akinshola Samuel AKINDE." }]
+maintainers = [
+    { name = "Akinshola Samuel AKINDE", email = "akinsholasamuel@gmail.com" },
+]
+keywords = ["paystack", "payment", "python", "git", "mcp", "llm", "automation"]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 1 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.15.0",
     "paystack-sdk>=0.0.10",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "ruff>=0.13.2",
+]
+
+[project.urls]
+Homepage = "https://akinshola.com/paystack-python-mcp"
+Repository = "https://github.com/thisishaykins/paystack-python-mcp"
+Issues = "https://github.com/thisishaykins/paystack-python-mcp/issues"

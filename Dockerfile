@@ -18,4 +18,5 @@ RUN uv pip install --system --no-cache .
 COPY . .
 
 # Set the command to run when the container launches
-CMD ["python", "mcp_server.py"]
+# CMD ["python", "mcp_server.py"]
+CMD ["uv", "run", "mcp_server.py"]
