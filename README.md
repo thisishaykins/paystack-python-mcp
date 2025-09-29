@@ -11,7 +11,6 @@ This server is built using the official `paystack-sdk` for Python and `FastMCP` 
 ## Features
 
 - A comprehensive set of tools for interacting with the Paystack API.
-- Asynchronous by default, built on `FastMCP`.
 - Easy to extend with new tools and functionality.
 - Includes a `Dockerfile` for easy containerization and deployment.
 
@@ -55,7 +54,7 @@ To use the Paystack MCP server, you need to provide your Paystack API key. The s
 To run the MCP server, execute the following command from the root of the project:
 
 ```bash
-uv run mcp_server.py # or python mcp_server.py
+uv run main.py # or python main.py
 ```
 
 The server will start and listen for requests on `stdio`.
@@ -63,7 +62,7 @@ The server will start and listen for requests on `stdio`.
 ### Or run using MCP inspector or in dev mode
 
 ```bash
-uv run mcp dev mcp_server.py
+uv run mcp dev main.py
 ```
 <img src="docs/images/mcp-inspector.png" alt="Paystack MCP Server running on Inspector" />
 
@@ -75,6 +74,7 @@ The following tools are available through the MCP server:
 | Tool | Description |
 | --- | --- |
 | `balance.read` | Retrieves the balance from a Paystack account. |
+| `balance.ledger` | Retrieves the balance ledger from a Paystack account. |
 | `customer.create` | Creates a new customer. |
 | `customer.list` | Retrieves a list of all customers. |
 | `customer.read` | Fetches the details of a specific customer. |
@@ -82,7 +82,7 @@ The following tools are available through the MCP server:
 | `dispute.add_evidence` | Adds evidence to a dispute. |
 | `dispute.list` | Retrieves a list of all disputes. |
 | `dispute.read` | Fetches the details of a specific dispute. |
-| `dispute.download` | Downloads a list of dispute with optional filters. |
+| `dispute.download` | Downloads a list of disputes with optional filters. |
 | `dispute.resolve` | Resolves a dispute. |
 | `invoice.create` | Creates a new invoice. |
 | `invoice.list` | Retrieves a list of all invoices. |
@@ -98,7 +98,7 @@ The following tools are available through the MCP server:
 | `plan.read` | Fetches the details of a specific subscription plan. |
 | `product.create` | Creates a new product. |
 | `product.list` | Retrieves a list of all products. |
-| `product.read` | Fetches the details of a specific products. |
+| `product.read` | Fetches the details of a specific product. |
 | `product.update` | Updates the details of a specific product. |
 | `product.delete` | Deletes a specific product. |
 | `refund.create` | Creates a new refund. |
@@ -110,11 +110,12 @@ The following tools are available through the MCP server:
 | `transaction.verify` | Verifies the status of a transaction. |
 | `transaction.timeline` | Retrieves the timeline of a specific transaction. |
 | `transaction.download` | Downloads a list of transactions with optional filters. |
+| `verification.fetch_banks` | Fetches a list of banks. |
+| `verification.list_avs` | Lists all available account verification services. |
+| `verification.list_countries` | Retrieves a list of all countries. |
 | `verification.resolve_account_number` | Resolves an account number to get the account holder's name. |
 | `verification.resolve_bvn` | Resolves a BVN to get the associated account details. |
 | `verification.resolve_card_bin` | Resolves a card BIN to get the associated card details. |
-| `verification.list_avs` | Lists all available account verification services. |
-| `verification.fetch_bank` | Fetches a list of banks. |
 
 ## Usage with an AI Assistant (e.g., Claude)
 
@@ -129,13 +130,13 @@ Add the following to your `claude_desktop_config.json`. See [here](https://model
 ```json
 {
   "mcpServers": {
-    "weather": {
+    "paystack": {
       "command": "uv",
       "args": [
         "--directory",
-        "/FULL/PATH/TO/home/thisishaykins/mcp-server-packages/paystack-python-mcp",
+        "/path/to/paystack-python-mcp",
         "run",
-        "mcp_server.py"
+        "main.py"
       ]
     }
   }
@@ -187,7 +188,7 @@ Run the following command in your terminal:
 
 ```bash
 # Start MCP Inspector and server with all tools
-uv run mcp dev mcp_server.py
+uv run mcp dev main.py
 ```
 
 ### Instructions

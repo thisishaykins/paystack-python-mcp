@@ -10,6 +10,14 @@ def get_balance():
     return paystack_client.get_balance()
 
 
+@mcp.tool(name="balance.ledger")
+def get_balance_ledger():
+    """
+    Retrieves the balance ledger from a Paystack account.
+    """
+    return paystack_client.get_balance_ledger()
+
+
 @mcp.tool(name="customer.list")
 def list_customers():
     """
@@ -322,7 +330,7 @@ def resolve_dispute(
 
 
 @mcp.tool(name="dispute.add_evidence")
-async def add_evidence_to_dispute(
+def add_evidence_to_dispute(
     dispute_id: str,
     customer_email: str,
     customer_name: str,
@@ -339,7 +347,7 @@ async def add_evidence_to_dispute(
         customer_phone: The phone number of the customer.
         service_details: Details of the service provided.
     """
-    return await paystack_client.add_evidence_to_dispute(
+    return paystack_client.add_evidence_to_dispute(
         dispute_id, customer_email, customer_name, customer_phone, service_details
     )
 
@@ -356,7 +364,7 @@ def create_payment_page(name: str, amount: int):
     return paystack_client.create_payment_page(name, amount)
 
 
-@mcp.tool(name="paynment_page.list")
+@mcp.tool(name="payment_page.list")
 def list_payment_pages():
     """
     Retrieves a list of all payment pages.
@@ -375,7 +383,7 @@ def fetch_payment_page(id: str):
     return paystack_client.fetch_payment_page(id)
 
 
-@mcp.tol(name="payment_page.update")
+@mcp.tool(name="payment_page.update")
 def update_payment_page(
     id: str,
     name: str | None = None,
@@ -413,7 +421,7 @@ def enable_payment_page(id: str):
     return paystack_client.enable_payment_page(id)
 
 
-@mcp.tool(name="paynment_page.add_products")
+@mcp.tool(name="payment_page.add_products")
 def add_products_to_payment_page(id: str, products: list[str]):
     """
     Adds products to a specific payment page.
@@ -456,55 +464,7 @@ def fetch_plan(plan_code: str):
     return paystack_client.fetch_plan(plan_code)
 
 
-@mcp.tool(name="verification.resolve_account_number")
-def resolve_account_number(account_number: str, bank_code: str):
-    """
-    Resolves an account number to get the account holder's name.
-
-    Args:
-        account_number: The account number to resolve.
-        bank_code: The bank code of the account's bank.
-    """
-    return paystack_client.resolve_account_number(account_number, bank_code)
-
-
-@mcp.tool(name="verification.list_avs")
-def list_avs(
-    type: str | None = None, country: str | None = None, currency: str | None = None
-):
-    """
-    Lists all available account verification services.
-    Args:
-        type: The type of verification service to filter by (optional).
-        country: The country code to filter by (optional).
-        currency: The currency code to filter by (optional).
-    """
-    return paystack_client.list_avs(type, country, currency)
-
-
-@mcp.tool(name="verification.resolve_bvn")
-def resolve_bvn(bvn: str):
-    """
-    Resolves a BVN to get the associated account details.
-
-    Args:
-        bvn: The BVN to resolve.
-    """
-    return paystack_client.resolve_bvn(bvn)
-
-
-@mcp.tool(name="verification.resolve_card_bin")
-def resolve_card_bin(card_bin: str):
-    """
-    Resolves a card BIN to get the associated card details.
-
-    Args:
-        card_bin: The card BIN to resolve.
-    """
-    return paystack_client.resolve_card_bin(card_bin)
-
-
-@mcp.tool(name="verification.fetch_bank")
+@mcp.tool(name="verification.fetch_banks")
 def fetch_banks(
     country: str | None = None,
     pay_with_bank_transfer: bool | None = None,
@@ -526,6 +486,49 @@ def fetch_banks(
         previous: The cursor for the previous page (optional).
         gateway: Filter banks by payment gateway (optional).
     """
-    return paystack_client.fetch_bank(
+    return paystack_client.fetch_banks(
         country, pay_with_bank_transfer, use_cursor, per_page, next, previous, gateway
     )
+
+
+@mcp.tool(name="verification.list_avs")
+def list_avs(country: str, type: str | None = None, currency: str | None = None):
+    """
+    Lists all available account verification services.
+    Args:
+        country: The country code to filter by.
+        type: The type of verification service to filter by (optional).
+        currency: The currency code to filter by (optional).
+    """
+    return paystack_client.list_avs(type, country, currency)
+
+
+@mcp.tool(name="verification.list_countries")
+def list_countries():
+    """
+    Retrieves a list of all countries.
+    """
+    return paystack_client.list_countries()
+
+
+@mcp.tool(name="verification.resolve_account_number")
+def resolve_account_number(account_number: str, bank_code: str):
+    """
+    Resolves an account number to get the account holder's name.
+
+    Args:
+        account_number: The account number to resolve.
+        bank_code: The bank code of the account's bank.
+    """
+    return paystack_client.resolve_account_number(account_number, bank_code)
+
+
+@mcp.tool(name="verification.resolve_card_bin")
+def resolve_card_bin(card_bin: str):
+    """
+    Resolves a card BIN to get the associated card details.
+
+    Args:
+        card_bin: The card BIN to resolve.
+    """
+    return paystack_client.resolve_card_bin(card_bin)
