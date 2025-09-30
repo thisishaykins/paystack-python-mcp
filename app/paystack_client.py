@@ -1,6 +1,6 @@
 import os
-import paystack
 from dotenv import load_dotenv
+import httpx
 
 load_dotenv()
 
@@ -17,61 +17,77 @@ class PaystackClient:
             raise ValueError("Paystack API key not provided.")
 
         self.api_key = api_key
-        paystack.api_key = self.api_key
+        self.client = httpx.AsyncClient(
+            base_url=PAYSTACK_API_BASE,
+            headers={"Authorization": f"Bearer {self.api_key}"},
+        )
 
-    def get_balance(self):
+    async def get_balance(self):
         """Get the balance from the Paystack API."""
-        return paystack.Balance.fetch()
+        response = await self.client.get("/balance")
+        return response.json()
 
-    def get_balance_ledger(self):
+    async def get_balance_ledger(self):
         """Get the balance ledger from the Paystack API."""
-        return paystack.Balance.ledger()
+        response = await self.client.get("/balance/ledger")
+        return response.json()
 
-    def list_customers(self):
+    async def list_customers(self):
         """List customers from the Paystack API."""
-        return paystack.Customer.list()
+        response = await self.client.get("/customer")
+        return response.json()
 
-    def create_customer(
+    async def create_customer(
         self, email: str, first_name: str, last_name: str, phone: str | None = None
     ):
         """Create a customer using the Paystack API."""
-        return paystack.Customer.create(
-            email=email, first_name=first_name, last_name=last_name, phone=phone
-        )
+        payload = {
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+            "phone": phone,
+        }
+        response = await self.client.post("/customer", json=payload)
+        return response.json()
 
-    def fetch_customer(self, customer_code: str):
+    async def fetch_customer(self, customer_code: str):
         """Fetch a customer's details from the Paystack API."""
-        return paystack.Customer.fetch(customer_code)
+        response = await self.client.get(f"/customer/{customer_code}")
+        return response.json()
 
-    def update_customer(
+    async def update_customer(
         self, code: str, first_name: str, last_name: str, phone: str | None = None
     ):
         """Update a customer's details using the Paystack API."""
-        return paystack.Customer.update(
-            code=code, first_name=first_name, last_name=last_name, phone=phone
-        )
+        payload = {"first_name": first_name, "last_name": last_name, "phone": phone}
+        response = await self.client.put(f"/customer/{code}", json=payload)
+        return response.json()
 
-    def list_products(self):
+    async def list_products(self):
         """List products from the Paystack API."""
-        return paystack.Product.list()
+        response = await self.client.get("/product")
+        return response.json()
 
-    def create_product(
+    async def create_product(
         self, name: str, description: str, price: int, currency: str, quantity: int = 1
     ):
         """Create a product using the Paystack API."""
-        return paystack.Product.create(
-            name=name,
-            description=description,
-            price=price,
-            currency=currency,
-            quantity=quantity,
-        )
+        payload = {
+            "name": name,
+            "description": description,
+            "price": price,
+            "currency": currency,
+            "quantity": quantity,
+        }
+        response = await self.client.post("/product", json=payload)
+        return response.json()
 
-    def fetch_product(self, product_code: str):
+    async def fetch_product(self, product_code: str):
         """Fetch a product's details from the Paystack API."""
-        return paystack.Product.fetch(product_code)
+        response = await self.client.get(f"/product/{product_code}")
+        return response.json()
 
-    def update_product(
+    async def update_product(
         self,
         product_code: str,
         name: str | None,
@@ -81,50 +97,59 @@ class PaystackClient:
         quantity: int | None = None,
     ):
         """Update a product's details using the Paystack API."""
-        return paystack.Product.update(
-            id=product_code,
-            name=name,
-            description=description,
-            price=price,
-            currency=currency,
-            quantity=quantity,
-        )
+        payload = {
+            "name": name,
+            "description": description,
+            "price": price,
+            "currency": currency,
+            "quantity": quantity,
+        }
+        response = await self.client.put(f"/product/{product_code}", json=payload)
+        return response.json()
 
-    def delete_product(self, product_code: str):
+    async def delete_product(self, product_code: str):
         """Delete a product using the Paystack API."""
-        return paystack.Product.delete(product_code)
+        response = await self.client.delete(f"/product/{product_code}")
+        return response.json()
 
-    def list_invoices(self):
+    async def list_invoices(self):
         """List invoices from the Paystack API."""
-        return paystack.PaymentRequest.list()
+        response = await self.client.get("/paymentrequest")
+        return response.json()
 
-    def create_invoice(self, customer: str, amount: int):
+    async def create_invoice(self, customer: str, amount: int):
         """Create an invoice using the Paystack API."""
-        return paystack.PaymentRequest.create(customer=customer, amount=amount)
+        payload = {"customer": customer, "amount": amount}
+        response = await self.client.post("/paymentrequest", json=payload)
+        return response.json()
 
-    def list_transactions(self):
+    async def list_transactions(self):
         """List transactions from the Paystack API."""
-        return paystack.Transaction.list()
+        response = await self.client.get("/transaction")
+        return response.json()
 
-    def initialize_transaction(self, email: str, amount: int, currency: str):
+    async def initialize_transaction(self, email: str, amount: int, currency: str):
         """Initialize a transaction using the Paystack API."""
-        return paystack.Transaction.initialize(
-            email=email, amount=amount, currency=currency
-        )
+        payload = {"email": email, "amount": amount, "currency": currency}
+        response = await self.client.post("/transaction/initialize", json=payload)
+        return response.json()
 
-    def verify_transaction(self, reference: str):
+    async def verify_transaction(self, reference: str):
         """Verify a transaction using the Paystack API."""
-        return paystack.Transaction.verify(reference=reference)
+        response = await self.client.get(f"/transaction/verify/{reference}")
+        return response.json()
 
-    def fetch_transaction(self, transaction_id: str):
+    async def fetch_transaction(self, transaction_id: str):
         """Fetch a transaction's details from the Paystack API."""
-        return paystack.Transaction.fetch(transaction_id)
+        response = await self.client.get(f"/transaction/{transaction_id}")
+        return response.json()
 
-    def get_transaction_timeline(self, id_or_reference: str):
+    async def get_transaction_timeline(self, id_or_reference: str):
         """Get a transaction's timeline from the Paystack API."""
-        return paystack.Transaction.timeline(id_or_reference)
+        response = await self.client.get(f"/transaction/timeline/{id_or_reference}")
+        return response.json()
 
-    def download_transactions(
+    async def download_transactions(
         self,
         per_page: int | None = 50,
         page: int | None = 1,
@@ -132,27 +157,33 @@ class PaystackClient:
         to_date: str | None = None,
     ):
         """Download a transactions receipt from the Paystack API."""
-        return paystack.Transaction.download(
-            per_page=per_page, page=page, _from=from_date, to=to_date
-        )
+        params = {"perPage": per_page, "page": page, "from": from_date, "to": to_date}
+        response = await self.client.get("/transaction/export", params=params)
+        return response.json()
 
-    def create_refund(self, transaction: str, amount: int | None = None):
+    async def create_refund(self, transaction: str, amount: int | None = None):
         """Create a refund using the Paystack API."""
-        return paystack.Refund.create(transaction=transaction, amount=amount)
+        payload = {"transaction": transaction, "amount": amount}
+        response = await self.client.post("/refund", json=payload)
+        return response.json()
 
-    def list_subscriptions(self):
+    async def list_subscriptions(self):
         """List subscriptions from the Paystack API."""
-        return paystack.Subscription.list()
+        response = await self.client.get("/subscription")
+        return response.json()
 
-    def disable_subscription(self, code: str, token: str):
+    async def disable_subscription(self, code: str, token: str):
         """Disable a subscription using the Paystack API."""
-        return paystack.Subscription.disable(code=code, token=token)
+        payload = {"code": code, "token": token}
+        response = await self.client.post("/subscription/disable", json=payload)
+        return response.json()
 
-    def list_disputes(self):
+    async def list_disputes(self):
         """List disputes from the Paystack API."""
-        return paystack.Dispute.list()
+        response = await self.client.get("/dispute")
+        return response.json()
 
-    def add_evidence_to_dispute(
+    async def add_evidence_to_dispute(
         self,
         dispute_id: str,
         customer_email: str,
@@ -161,19 +192,21 @@ class PaystackClient:
         service_details: str,
     ):
         """Add evidence to a dispute using the Paystack API."""
-        return paystack.Dispute.add_evidence(
-            id=dispute_id,
-            customer_email=customer_email,
-            customer_name=customer_name,
-            customer_phone=customer_phone,
-            service_details=service_details,
-        )
+        payload = {
+            "customer_email": customer_email,
+            "customer_name": customer_name,
+            "customer_phone": customer_phone,
+            "service_details": service_details,
+        }
+        response = await self.client.post(f"/dispute/{dispute_id}/evidence", json=payload)
+        return response.json()
 
-    def fetch_dispute(self, dispute_id: str):
+    async def fetch_dispute(self, dispute_id: str):
         """Fetch a dispute's details from the Paystack API."""
-        return paystack.Dispute.fetch(dispute_id)
+        response = await self.client.get(f"/dispute/{dispute_id}")
+        return response.json()
 
-    def download_dispute(
+    async def download_dispute(
         self,
         per_page: int | None = 50,
         page: int | None = 1,
@@ -181,11 +214,11 @@ class PaystackClient:
         to_date: str | None = None,
     ):
         """Download a dispute receipt from the Paystack API."""
-        return paystack.Dispute.download(
-            per_page=per_page, page=page, _from=from_date, to=to_date
-        )
+        params = {"perPage": per_page, "page": page, "from": from_date, "to": to_date}
+        response = await self.client.get("/dispute/export", params=params)
+        return response.json()
 
-    def resolve_dispute(
+    async def resolve_dispute(
         self,
         dispute_id: str,
         resolution: str,
@@ -195,25 +228,35 @@ class PaystackClient:
         evidence: str | None = None,
     ):
         """Resolve a dispute using the Paystack API."""
-        return paystack.Dispute.resolve(
-            dispute_id, resolution, message, refund_amount, uploaded_filename, evidence
-        )
+        payload = {
+            "resolution": resolution,
+            "message": message,
+            "refund_amount": refund_amount,
+            "uploaded_filename": uploaded_filename,
+            "evidence": evidence,
+        }
+        response = await self.client.put(f"/dispute/{dispute_id}/resolve", json=payload)
+        return response.json()
 
-    def create_payment_page(
+    async def create_payment_page(
         self, name: str, amount: int, description: str | None = None
     ):
         """Create a payment page using the Paystack API."""
-        return paystack.Page.create(name=name, amount=amount, description=description)
+        payload = {"name": name, "amount": amount, "description": description}
+        response = await self.client.post("/page", json=payload)
+        return response.json()
 
-    def list_payment_pages(self):
+    async def list_payment_pages(self):
         """List payment pages from the Paystack API."""
-        return paystack.Page.list()
+        response = await self.client.get("/page")
+        return response.json()
 
-    def fetch_payment_page(self, id: str):
+    async def fetch_payment_page(self, id: str):
         """Fetch a payment page's details from the Paystack API."""
-        return paystack.Page.fetch(id)
+        response = await self.client.get(f"/page/{id}")
+        return response.json()
 
-    def update_payment_page(
+    async def update_payment_page(
         self,
         id: str,
         name: str | None = None,
@@ -221,50 +264,62 @@ class PaystackClient:
         amount: int | None = None,
     ):
         """Update a payment page using the Paystack API."""
-        return paystack.Page.update(
-            id, name=name, description=description, amount=amount
-        )
+        payload = {"name": name, "description": description, "amount": amount}
+        response = await self.client.put(f"/page/{id}", json=payload)
+        return response.json()
 
-    def disable_payment_page(self, id: str):
+    async def disable_payment_page(self, id: str):
         """Disable a payment page using the Paystack API."""
-        return paystack.Page.update(id, active=False)
+        payload = {"active": False}
+        response = await self.client.put(f"/page/{id}", json=payload)
+        return response.json()
 
-    def enable_payment_page(self, id: str):
+    async def enable_payment_page(self, id: str):
         """Enable a payment page using the Paystack API."""
-        return paystack.Page.update(id, active=True)
+        payload = {"active": True}
+        response = await self.client.put(f"/page/{id}", json=payload)
+        return response.json()
 
-    def add_products_to_payment_page(self, id: str, products: list[str]):
+    async def add_products_to_payment_page(self, id: str, products: list[str]):
         """Add products to a payment page using the Paystack API."""
-        return paystack.Page.add_products(id=id, product=products)
+        payload = {"product": products}
+        response = await self.client.post(f"/page/{id}/product", json=payload)
+        return response.json()
 
-    def create_plan(self, name: str, amount: int, interval: str):
+    async def create_plan(self, name: str, amount: int, interval: str):
         """Create a plan using the Paystack API."""
-        return paystack.Plan.create(name=name, amount=amount, interval=interval)
+        payload = {"name": name, "amount": amount, "interval": interval}
+        response = await self.client.post("/plan", json=payload)
+        return response.json()
 
-    def list_plans(self):
+    async def list_plans(self):
         """List plans from the Paystack API."""
-        return paystack.Plan.list()
+        response = await self.client.get("/plan")
+        return response.json()
 
-    def fetch_plan(self, plan_code: str):
+    async def fetch_plan(self, plan_code: str):
         """Fetch a plan's details from the Paystack API."""
-        return paystack.Plan.fetch(plan_code)
+        response = await self.client.get(f"/plan/{plan_code}")
+        return response.json()
 
-    def resolve_account_number(self, account_number: str, bank_code: str):
+    async def resolve_account_number(self, account_number: str, bank_code: str):
         """Resolve an account number using the Paystack API."""
-        return paystack.Verification.resolve_account_number(
-            account_number=account_number, bank_code=bank_code
-        )
+        params = {"account_number": account_number, "bank_code": bank_code}
+        response = await self.client.get("/bank/resolve", params=params)
+        return response.json()
 
-    def list_avs(
+    async def list_avs(
         self,
         country: str,
         type: str | None = None,
         currency: str | None = None,
     ):
         """List states for address_verification the Paystack API."""
-        return paystack.Verification.avs(type=type, country=country, currency=currency)
+        params = {"type": type, "country": country, "currency": currency}
+        response = await self.client.get("/address_verification/states", params=params)
+        return response.json()
 
-    def fetch_banks(
+    async def fetch_banks(
         self,
         country: str | None = None,
         pay_with_bank_transfer: bool | None = None,
@@ -275,24 +330,37 @@ class PaystackClient:
         gateway: str | None = None,
     ):
         """Fetch a bank's details from the Paystack API."""
-        return paystack.Verification.fetch_banks(
-            country=country,
-            pay_with_bank_transfer=pay_with_bank_transfer,
-            use_cursor=use_cursor,
-            per_page=per_page,
-            next=next,
-            previous=previous,
-            gateway=gateway,
-        )
+        params = {
+            "country": country,
+            "pay_with_bank_transfer": pay_with_bank_transfer,
+            "use_cursor": use_cursor,
+            "per_page": per_page,
+            "next": next,
+            "previous": previous,
+            "gateway": gateway,
+        }
+        response = await self.client.get("/bank", params=params)
+        return response.json()
 
-    def list_countries(self):
+    async def list_countries(self):
         """List countries from the Paystack API."""
-        return paystack.Verification.list_countries()
+        response = await self.client.get("/country")
+        return response.json()
 
-    def resolve_card_bin(self, card_bin: str):
+    async def resolve_card_bin(self, card_bin: str):
         """Resolve a card bin using the Paystack API."""
-        return paystack.Verification.resolve_card_bin(card_bin)
+        response = await self.client.get(f"/decision/bin/{card_bin}")
+        return response.json()
+
+
+class _LazyPaystackClient:
+    _instance = None
+
+    def __getattr__(self, name):
+        if self._instance is None:
+            self._instance = PaystackClient()
+        return getattr(self._instance, name)
 
 
 # A single client instance to be used by the tools
-paystack_client = PaystackClient()
+paystack_client = _LazyPaystackClient()
