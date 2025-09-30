@@ -23,13 +23,14 @@ classifiers = [
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.15.0",
-    "paystack-sdk>=0.0.10",
+    "python-dotenv>=1.0.0",
 ]
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "pytest>=8.4.2",
     "ruff>=0.13.2",
+    "pytest-asyncio>=0.23.8",
 ]
 
 [project.urls]
